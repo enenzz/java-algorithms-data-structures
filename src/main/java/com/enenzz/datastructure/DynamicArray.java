@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 public class DynamicArray implements Iterable<Integer> {
     private int size = 0; //逻辑大小
     private int capacity = 8; //数值大小
-    private int[] arr = new int[capacity];
+    private int[] arr = {};
 
     /**
      * 向数据尾部新增一个数据
@@ -28,6 +28,10 @@ public class DynamicArray implements Iterable<Integer> {
      * @param val
      */
     public void insert(int i, int val) {
+        //数组容量检测和扩容
+        checkAndGrow();
+
+        //插入元素
         if (0 <= i && i < size) { //注意i=size时不用拷贝数组
             //将插入位之后的元素后移
             System.arraycopy(arr, i, arr, i+1, size-i);
@@ -36,6 +40,35 @@ public class DynamicArray implements Iterable<Integer> {
         }
         arr[i] = val;
         size++;
+    }
+
+    /**
+     * 数组容量检测和扩容
+     */
+    public void checkAndGrow() {
+        if (size == 0) {
+            //若数组为空
+            arr = new int[capacity];
+        } else if (size == capacity) {
+            //将数组大小扩容为原来的1.5倍
+            capacity += capacity >> 1;
+            int[] newArr = new int[capacity];
+            System.arraycopy(arr, 0 , newArr ,0, size);
+            arr = newArr;
+        }
+    }
+
+    /**
+     * 删除指定的元素
+     * @param i
+     * @return 删除的元素
+     */
+    public int remove(int i) {
+        int removed = arr[i];
+        if (i < size-1)
+            System.arraycopy(arr, i+1, arr, i, size-i-1);
+        size--;
+        return removed;
     }
 
     /**
